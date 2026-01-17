@@ -19,7 +19,7 @@ Or:
 
 Tell OpenCode:
 
-> Clone https://github.com/ianchenx/ian-skills to ~/.config/opencode/skills/ian-skills, then restart opencode.
+> Clone https://github.com/ianchenx/ian-skills to ~/.config/opencode/skill/ian-skills, then restart opencode.
 
 ## Skills
 
