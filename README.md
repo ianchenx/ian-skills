@@ -15,24 +15,20 @@ Or:
 /plugin marketplace add ianchenx/ian-skills
 ```
 
-### OpenCode
-
-Tell OpenCode:
-
-> Copy the `skills/ian-gemini-web` folder from https://github.com/ianchenx/ian-skills to `~/.config/opencode/skill/ian-gemini-web`, then run `cd ~/.config/opencode/skill/ian-gemini-web && npm install`, then restart opencode.
-
 ## Skills
 
 ### ian-gemini-web
 
 Gemini Web image generation with **automatic watermark removal**.
 
-```bash
-# Generate image
-npx -y bun scripts/main.ts --prompt "A cute cat" --image cat.png
+**OpenCode Installation:**
 
-# From prompt files
-npx -y bun scripts/main.ts --promptfiles system.md content.md --image out.png
+> Please install the skill from github.com/ianchenx/ian-skills/skills/ian-gemini-web to ~/.config/opencode/skill
+
+**Usage:**
+
+```bash
+npx -y bun scripts/main.ts --prompt "A cute cat" --image cat.png
 ```
 
 **Features:**
