@@ -19,7 +19,7 @@ Or:
 
 Tell OpenCode:
 
-> Clone https://github.com/ianchenx/ian-skills to ~/.config/opencode/skill/ian-skills, then restart opencode.
+> Copy the `skills/ian-gemini-web` folder from https://github.com/ianchenx/ian-skills to `~/.config/opencode/skill/ian-gemini-web`, then run `cd ~/.config/opencode/skill/ian-gemini-web && npm install`, then restart opencode.
 
 ## Skills
 
