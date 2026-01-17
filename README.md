@@ -1,17 +1,25 @@
 # Ian Skills
 
-Personal skill collection for Claude Code.
+Personal skill collection for Claude Code / OpenCode.
 
 ## Installation
 
+### Claude Code
+
 ```bash
-npx add-skill your-github-username/ian-skills
+npx add-skill ianchenx/ian-skills
 ```
 
-Or in Claude Code:
+Or:
 ```
-/plugin marketplace add your-github-username/ian-skills
+/plugin marketplace add ianchenx/ian-skills
 ```
+
+### OpenCode
+
+Tell OpenCode:
+
+> Clone https://github.com/ianchenx/ian-skills to ~/.config/opencode/skills/ian-skills, then restart opencode.
 
 ## Skills
 
