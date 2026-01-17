@@ -1,0 +1,7 @@
+{
+  "name": "ian-gemini-web",
+  "version": "1.0.0",
+  "dependencies": {
+    "pngjs": "^7.0.0"
+  }
+}
