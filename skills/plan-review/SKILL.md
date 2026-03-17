@@ -1,6 +1,7 @@
 ---
 name: plan-review
-description: Review implementation plans to find blocking issues before execution. Use when the user says "review plan", "check this plan", "look at my plan", or needs a senior engineer perspective on an implementation_plan.md. Also trigger when the user shares an implementation plan and seeks feedback, wants to confirm feasibility, or hesitates before execution, even if they don't explicitly say "review".
+description: Use when asked to review or audit an implementation plan.
+disable-model-invocation: true
 ---
 
 # Plan Review — Senior Engineer Audit
@@ -13,7 +14,7 @@ This review matters because plans are often AI-generated. AI agents are good at 
 
 ### Step 0: Locate the Plan
 
-Read the file the user specifies. If none specified, search the workspace for `implementation_plan.md`. If multiple candidates exist, ask which one to review.
+Read the file the user specifies. If none specified, search the workspace for plan documents (e.g. `*plan*.md`, `*design*.md`, `*spec*.md`). If multiple candidates exist, ask which one to review.
 
 ### Step 1: Four-Dimension Inspection
 
