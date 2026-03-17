@@ -62,6 +62,15 @@ npx -y bun scripts/main.ts --prompt "A cute cat" --image cat.png
 - Models: gemini-3-pro, gemini-2.5-pro, gemini-2.5-flash
 - First run opens Chrome for Google authentication
 
+### spec-driven-dev
+
+Spec-driven development lifecycle: design → spec → issue.
+
+- Three phases: design discussion, spec writing, delivery preparation
+- Complexity-based routing: simple (direct issue), medium (spec → issue), complex (design → spec → issues)
+- Zero dependencies: auto-detects issue tracker (Linear, GitHub, or local fallback)
+- Single spec file evolves through lifecycle: `design → spec → ready → implemented`
+
 ## Credits
 
 - Codex review adapted from [poteto/noodle adversarial-review](https://skills.sh/poteto/noodle/adversarial-review)

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5 - 2026-03-18
+
+### Features
+- Add spec-driven-dev: spec-driven development lifecycle (design → spec → issue), zero external dependencies, supports Linear/GitHub/local fallback
+
 ## 0.1.4 - 2026-03-17
 
 ### Refactor
