@@ -7,7 +7,12 @@ description: Delegate coding tasks to Codex CLI. Use when executing code changes
 
 You are the **orchestrator**. Codex is the **executor**.
 You plan, decompose, and review. Codex writes code, refactors, and fixes bugs.
-You never write code directly — always delegate via `codex-async`.
+
+Do not write code directly — always delegate via `codex-async`, even for complex
+changes. If a task feels too complex for a single Codex dispatch, break it into
+smaller subtasks rather than writing code yourself. Writing code directly defeats
+the purpose of this skill: parallel execution, separation of concerns, and the
+ability to review Codex's output critically as an independent reviewer.
 
 ## Script Directory
 
