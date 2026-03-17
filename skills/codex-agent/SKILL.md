@@ -9,14 +9,20 @@ You are the **orchestrator**. Codex is the **executor**.
 You plan, decompose, and review. Codex writes code, refactors, and fixes bugs.
 You never write code directly — always delegate via `codex-async`.
 
-## Setup
+## Script Directory
 
-```bash
-chmod +x ~/.gemini/antigravity/skills/codex-agent/scripts/codex-async
-export PATH="$HOME/.gemini/antigravity/skills/codex-agent/scripts:$PATH"
-```
+**Agent Execution Instructions**:
+1. Determine this SKILL.md file's directory path as `{baseDir}`
+2. Script path = `{baseDir}/scripts/codex-async`
+3. Run `chmod +x {baseDir}/scripts/codex-async` once
+4. Replace all `{baseDir}` in this document with the actual path
 
-Verify: `codex-async help`
+**Script Reference**:
+| Script | Purpose |
+|--------|---------|
+| `scripts/codex-async` | Async task manager wrapping `codex exec` |
+
+Verify: `{baseDir}/scripts/codex-async help`
 
 ## Workflow
 
@@ -29,25 +35,25 @@ Identify dependencies — steps without dependencies run in parallel.
 
 ```bash
 # Single task
-codex-async run --cd "$PWD" "Implement JWT auth in src/auth.ts"
+{baseDir}/scripts/codex-async run --cd "$PWD" "Implement JWT auth in src/auth.ts"
 
 # Parallel — launch multiple in one turn
-codex-async run --cd "$PWD" "Implement auth module"
-codex-async run --cd "$PWD" "Write tests for utils"
-codex-async run --cd "$PWD" "Refactor error handling"
+{baseDir}/scripts/codex-async run --cd "$PWD" "Implement auth module"
+{baseDir}/scripts/codex-async run --cd "$PWD" "Write tests for utils"
+{baseDir}/scripts/codex-async run --cd "$PWD" "Refactor error handling"
 ```
 
 ### 3. Wait & Collect
 
 ```bash
-codex-async wait <id1> <id2> --timeout 300
-codex-async result <id>
+{baseDir}/scripts/codex-async wait <id1> <id2> --timeout 300
+{baseDir}/scripts/codex-async result <id>
 ```
 
 ### 4. Review
 
 Read results critically. If not satisfied:
-- Resume: `codex-async resume <id> "Fix null input handling"`
+- Resume: `{baseDir}/scripts/codex-async resume <id> "Fix null input handling"`
 - Or re-dispatch with clearer instructions
 
 ### 5. Review (Optional)
@@ -66,7 +72,7 @@ Definition of done: tests pass, no unintended side effects, plan fulfilled.
 
 ## Options Reference
 
-See `codex-async help` for full CLI reference. Key options:
+See `{baseDir}/scripts/codex-async help` for full CLI reference. Key options:
 
 | Option | Values | Default |
 |---|---|---|
@@ -90,5 +96,5 @@ When in doubt, keep `xhigh`.
 ## Error Handling
 
 - Task exits non-zero → read result, diagnose, retry with clearer prompt
-- Task hangs → `codex-async kill <id>` and retry
+- Task hangs → `{baseDir}/scripts/codex-async kill <id>` and retry
 - 3 retries fail → escalate to user with diagnosis
