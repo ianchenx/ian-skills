@@ -10,15 +10,31 @@
   },
   "plugins": [
     {
-      "name": "content-skills",
-      "description": "Skills shared by Ian for improving daily work efficiency",
+      "name": "codex-skills",
+      "description": "Codex-powered coding and review",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/ian-gemini-web",
         "./skills/codex-agent",
-        "./skills/codex-review",
+        "./skills/codex-review"
+      ]
+    },
+    {
+      "name": "workflow-skills",
+      "description": "Session and workflow management",
+      "source": "./",
+      "strict": false,
+      "skills": [
         "./skills/handoff"
+      ]
+    },
+    {
+      "name": "generation-skills",
+      "description": "AI-powered generation backends",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/ian-gemini-web"
       ]
     }
   ]
