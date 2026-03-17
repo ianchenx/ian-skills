@@ -7,12 +7,12 @@ Personal skill collection for Claude Code / Antigravity / OpenCode.
 ### Claude Code
 
 ```bash
-npx add-skill ianchenx/ian-skills
+npx skills add ianchenx/ian-skills
 ```
 
 Or:
 ```
-/plugin marketplace add ianchenx/ian-skills
+/install ianchenx/ian-skills
 ```
 
 ### Antigravity
