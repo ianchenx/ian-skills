@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1 - 2026-03-17
+
+### Fixes
+- codex-agent: use baseDir pattern instead of hardcoded paths
+
+### Chores
+- Split marketplace plugins into dev-skills and generation-skills
+- Fix deprecated installation commands in README
+
 ## 0.1.0 - 2026-03-17
 
 ### Features
