@@ -10,21 +10,13 @@
   },
   "plugins": [
     {
-      "name": "codex-skills",
-      "description": "Codex-powered coding and review",
+      "name": "dev-skills",
+      "description": "Development workflow: coding, review, and session management",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/codex-agent",
-        "./skills/codex-review"
-      ]
-    },
-    {
-      "name": "workflow-skills",
-      "description": "Session and workflow management",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/codex-review",
         "./skills/handoff"
       ]
     },
