@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-03-17
+
+### Fixes
+- codex-agent: auto-select reasoning level without asking user
+- codex-agent: simplify options reference with clear model listing
+
 ## 0.1.1 - 2026-03-17
 
 ### Fixes
