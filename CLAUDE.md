@@ -1,28 +1,44 @@
 # Ian Skills
 
-This repository contains personal skills for Claude Code.
+Personal skill collection for Claude Code / Antigravity / OpenCode.
 
 ## Structure
 
 ```
 ian-skills/
 ├── .claude-plugin/
-│   └── marketplace.json    # Plugin configuration
+│   └── marketplace.json    # Plugin config (dev-skills + generation-skills)
+├── .claude/
+│   └── skills/
+│       └── release-skills/ # Release workflow (internal, not published)
 ├── skills/
-│   └── ian-gemini-web/     # Gemini Web integration skill
-│       ├── SKILL.md        # Skill definition
-│       └── scripts/        # TypeScript implementation
+│   ├── codex-agent/        # Async Codex task delegation
+│   ├── codex-review/       # Multi-lens adversarial review via Codex
+│   ├── handoff/            # Session handoff (HANDOFF.md)
+│   ├── ian-gemini-web/     # Gemini Web image generation
+│   └── spec-driven-dev/    # Spec-driven dev lifecycle
+├── CHANGELOG.md
 └── README.md
 ```
 
+## Plugin Groups
+
+- **dev-skills**: codex-agent, codex-review, handoff
+- **generation-skills**: ian-gemini-web
+
 ## Available Skills
 
-- **ian-gemini-web**: Image and text generation using Gemini Web
+| Skill | Description | Trigger |
+|---|---|---|
+| codex-agent | Delegate coding tasks to Codex CLI (async, parallel) | coding tasks, bug fixes, refactors |
+| codex-review | Adversarial review: Skeptic / Architect / Minimalist | "review", "审查", "check the code" |
+| handoff | Write HANDOFF.md for context preservation | session wrap-up, context overflow |
+| ian-gemini-web | Image generation via Gemini Web + watermark removal | image generation backend |
+| spec-driven-dev | Design → spec → issue lifecycle | "讨论下", "写 spec", "开 issue", "设计一下" |
+| release-skills | Standardized release workflow (internal) | "release", "发布", "bump version" |
 
-## Usage
+## Development
 
-Skills are loaded automatically when the plugin is installed. Use the skill name to invoke:
-
-```
-/skill ian-gemini-web
-```
+- Version tracked in `.claude-plugin/marketplace.json`
+- Changelog in `CHANGELOG.md` (conventional commits)
+- Release via `release-skills` skill
