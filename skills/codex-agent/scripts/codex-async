@@ -1,0 +1,310 @@
+#!/usr/bin/env bash
+# codex-async — 异步 Codex 任务执行器
+# 支持后台执行、并行任务、状态查询、结果回收
+set -euo pipefail
+
+TASK_DIR="${CODEX_TASK_DIR:-/tmp/codex-tasks}"
+
+usage() {
+  cat <<'EOF'
+用法: codex-async <command> [options]
+
+Commands:
+  run    [--model MODEL] [--reasoning LEVEL] [--sandbox MODE] [--cd DIR] PROMPT
+         后台启动 Codex 任务，返回 task_id
+  status [TASK_ID]
+         查看任务状态（不传 ID 则列出所有）
+  result TASK_ID
+         获取任务输出结果
+  wait   TASK_ID [TASK_ID...]  [--timeout SECONDS]
+         等待一个或多个任务完成
+  resume TASK_ID PROMPT
+         恢复已完成任务的 session
+  kill   TASK_ID
+         终止运行中的任务
+  clean  清理已完成任务的日志
+
+Options (run):
+  --model      模型选择 (默认: gpt-5.3-codex)
+  --reasoning  推理强度: low|medium|high|xhigh (默认: xhigh)
+  --sandbox    沙箱模式: read-only|workspace-write|danger-full-access (默认: workspace-write)
+  --cd         工作目录 (默认: 当前目录)
+EOF
+}
+
+cmd_run() {
+  local model="gpt-5.3-codex"
+  local reasoning="xhigh"
+  local sandbox="workspace-write"
+  local workdir="$PWD"
+  local prompt=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --model)     model="$2"; shift 2 ;;
+      --reasoning) reasoning="$2"; shift 2 ;;
+      --sandbox)   sandbox="$2"; shift 2 ;;
+      --cd)        workdir="$2"; shift 2 ;;
+      -*)          echo "未知选项: $1" >&2; exit 1 ;;
+      *)           prompt="$1"; shift ;;
+    esac
+  done
+
+  if [[ -z "$prompt" ]]; then
+    echo "错误: 缺少 PROMPT 参数" >&2
+    exit 1
+  fi
+
+  local task_id
+  task_id=$(date +%s%N | md5 | head -c8 2>/dev/null || date +%s%N | md5sum | head -c8)
+  local logdir="$TASK_DIR/$task_id"
+  mkdir -p "$logdir"
+
+  # 保存元数据
+  cat > "$logdir/meta.json" <<METAEOF
+{
+  "task_id": "$task_id",
+  "model": "$model",
+  "reasoning": "$reasoning",
+  "sandbox": "$sandbox",
+  "workdir": "$workdir",
+  "prompt": $(printf '%s' "$prompt" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))'),
+  "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "status": "running"
+}
+METAEOF
+
+  # 后台执行 codex
+  (
+    codex exec \
+      -m "$model" \
+      --config "model_reasoning_effort=\"$reasoning\"" \
+      --sandbox "$sandbox" \
+      --full-auto \
+      --skip-git-repo-check \
+      -C "$workdir" \
+      "$prompt" \
+      > "$logdir/stdout.log" 2>/dev/null
+
+    local exit_code=$?
+    # 更新状态
+    python3 -c "
+import json
+with open('$logdir/meta.json') as f: d = json.load(f)
+d['status'] = 'done' if $exit_code == 0 else 'failed'
+d['exit_code'] = $exit_code
+d['finished_at'] = '$(date -u +%Y-%m-%dT%H:%M:%SZ)'
+with open('$logdir/meta.json', 'w') as f: json.dump(d, f, indent=2)
+" 2>/dev/null || true
+  ) &
+
+  local pid=$!
+  echo "$pid" > "$logdir/pid"
+
+  echo "{\"task_id\":\"$task_id\",\"pid\":$pid,\"status\":\"running\",\"model\":\"$model\"}"
+}
+
+cmd_status() {
+  local target_id="${1:-}"
+
+  if [[ -n "$target_id" ]]; then
+    local logdir="$TASK_DIR/$target_id"
+    if [[ ! -d "$logdir" ]]; then
+      echo "任务不存在: $target_id" >&2
+      exit 1
+    fi
+    _task_status "$logdir"
+    return
+  fi
+
+  # 列出所有任务
+  if [[ ! -d "$TASK_DIR" ]]; then
+    echo "无任务"
+    return
+  fi
+
+  local found=0
+  for d in "$TASK_DIR"/*/; do
+    [[ -d "$d" ]] || continue
+    found=1
+    _task_status "$d"
+  done
+  [[ $found -eq 0 ]] && echo "无任务"
+}
+
+_task_status() {
+  local logdir="$1"
+  local id
+  id=$(basename "$logdir")
+  local pid
+  pid=$(cat "$logdir/pid" 2>/dev/null || echo "")
+  local status="unknown"
+
+  if [[ -f "$logdir/meta.json" ]]; then
+    status=$(python3 -c "import json; print(json.load(open('$logdir/meta.json')).get('status','unknown'))" 2>/dev/null || echo "unknown")
+  fi
+
+  # 如果 meta 说 running，检查进程是否还活着
+  if [[ "$status" == "running" && -n "$pid" ]]; then
+    if ! kill -0 "$pid" 2>/dev/null; then
+      status="done"
+    fi
+  fi
+
+  local model
+  model=$(python3 -c "import json; print(json.load(open('$logdir/meta.json')).get('model','?'))" 2>/dev/null || echo "?")
+  echo "$id  $status  model=$model  pid=$pid"
+}
+
+cmd_result() {
+  local task_id="${1:?用法: codex-async result TASK_ID}"
+  local logdir="$TASK_DIR/$task_id"
+
+  if [[ ! -f "$logdir/stdout.log" ]]; then
+    echo "任务不存在或尚无输出: $task_id" >&2
+    exit 1
+  fi
+
+  cat "$logdir/stdout.log"
+}
+
+cmd_wait() {
+  local timeout=300
+  local ids=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --timeout) timeout="$2"; shift 2 ;;
+      *)         ids+=("$1"); shift ;;
+    esac
+  done
+
+  if [[ ${#ids[@]} -eq 0 ]]; then
+    echo "用法: codex-async wait TASK_ID [TASK_ID...] [--timeout SECONDS]" >&2
+    exit 1
+  fi
+
+  local start
+  start=$(date +%s)
+
+  for id in "${ids[@]}"; do
+    local pidfile="$TASK_DIR/$id/pid"
+    if [[ ! -f "$pidfile" ]]; then
+      echo "任务不存在: $id" >&2
+      continue
+    fi
+
+    local pid
+    pid=$(cat "$pidfile")
+    while kill -0 "$pid" 2>/dev/null; do
+      local elapsed=$(( $(date +%s) - start ))
+      if [[ $elapsed -ge $timeout ]]; then
+        echo "超时: 任务 $id 仍在运行 (${elapsed}s)" >&2
+        return 1
+      fi
+      sleep 2
+    done
+    echo "✅ $id 已完成"
+  done
+}
+
+cmd_resume() {
+  local task_id="${1:?用法: codex-async resume TASK_ID PROMPT}"
+  local prompt="${2:?缺少 PROMPT}"
+  local logdir="$TASK_DIR/$task_id"
+
+  if [[ ! -d "$logdir" ]]; then
+    echo "任务不存在: $task_id" >&2
+    exit 1
+  fi
+
+  # 创建新的 task_id 追踪 resume
+  local new_id
+  new_id=$(date +%s%N | md5 | head -c8 2>/dev/null || date +%s%N | md5sum | head -c8)
+  local new_logdir="$TASK_DIR/$new_id"
+  mkdir -p "$new_logdir"
+
+  local workdir
+  workdir=$(python3 -c "import json; print(json.load(open('$logdir/meta.json')).get('workdir','$PWD'))" 2>/dev/null || echo "$PWD")
+
+  cat > "$new_logdir/meta.json" <<METAEOF
+{
+  "task_id": "$new_id",
+  "resumed_from": "$task_id",
+  "prompt": $(printf '%s' "$prompt" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))'),
+  "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "status": "running"
+}
+METAEOF
+
+  (
+    cd "$workdir"
+    echo "$prompt" | codex exec --skip-git-repo-check resume --last \
+      > "$new_logdir/stdout.log" 2>/dev/null
+
+    local exit_code=$?
+    python3 -c "
+import json
+with open('$new_logdir/meta.json') as f: d = json.load(f)
+d['status'] = 'done' if $exit_code == 0 else 'failed'
+d['exit_code'] = $exit_code
+d['finished_at'] = '$(date -u +%Y-%m-%dT%H:%M:%SZ)'
+with open('$new_logdir/meta.json', 'w') as f: json.dump(d, f, indent=2)
+" 2>/dev/null || true
+  ) &
+
+  local pid=$!
+  echo "$pid" > "$new_logdir/pid"
+  echo "{\"task_id\":\"$new_id\",\"resumed_from\":\"$task_id\",\"pid\":$pid,\"status\":\"running\"}"
+}
+
+cmd_kill() {
+  local task_id="${1:?用法: codex-async kill TASK_ID}"
+  local pidfile="$TASK_DIR/$task_id/pid"
+
+  if [[ ! -f "$pidfile" ]]; then
+    echo "任务不存在: $task_id" >&2
+    exit 1
+  fi
+
+  local pid
+  pid=$(cat "$pidfile")
+  if kill -0 "$pid" 2>/dev/null; then
+    kill "$pid" 2>/dev/null
+    echo "已终止任务 $task_id (PID $pid)"
+  else
+    echo "任务 $task_id 已不在运行"
+  fi
+}
+
+cmd_clean() {
+  if [[ ! -d "$TASK_DIR" ]]; then
+    echo "无任务目录"
+    return
+  fi
+
+  local count=0
+  for d in "$TASK_DIR"/*/; do
+    [[ -d "$d" ]] || continue
+    local pid
+    pid=$(cat "$d/pid" 2>/dev/null || echo "")
+    if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
+      rm -rf "$d"
+      ((count++))
+    fi
+  done
+  echo "已清理 $count 个已完成任务"
+}
+
+# 主入口
+case "${1:-help}" in
+  run)    shift; cmd_run "$@" ;;
+  status) shift; cmd_status "$@" ;;
+  result) shift; cmd_result "$@" ;;
+  wait)   shift; cmd_wait "$@" ;;
+  resume) shift; cmd_resume "$@" ;;
+  kill)   shift; cmd_kill "$@" ;;
+  clean)  shift; cmd_clean "$@" ;;
+  help|-h|--help) usage ;;
+  *)      echo "未知命令: $1" >&2; usage; exit 1 ;;
+esac
