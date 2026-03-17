@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.6 - 2026-03-18
+
+### Features
+- Add plan-review: structured review skill for validating implementation plans against codebase reality
+- Add linear: TypeScript-based Linear issue management with GraphQL API (CRUD, search, comments, workflow states)
+
+### Refactor
+- spec-driven-dev: decouple issue tracker into provider system (linear/github/local), replace hardcoded paths with `<specDir>` variable, add concrete complexity examples
+- plan-review: optimize description, add `disable-model-invocation`
+- linear: optimize description for context efficiency
+
+### Docs
+- Update CLAUDE.md with all current skills and structure
+
 ## 0.1.5 - 2026-03-18
 
 ### Features
