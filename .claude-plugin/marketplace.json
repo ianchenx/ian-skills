@@ -15,7 +15,10 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/ian-gemini-web"
+        "./skills/ian-gemini-web",
+        "./skills/codex-agent",
+        "./skills/codex-review",
+        "./skills/handoff"
       ]
     }
   ]
