@@ -68,8 +68,8 @@
 
 讨论完成后：
 
-1. **创建或更新 spec 文件**（`docs/specs/NNN-title.md`，`status: design`），包含：问题描述、设计决策（选什么+为什么+否决了什么）、目标。参见 [templates.md](templates.md) 的 Spec 模板。
+1. **创建或更新 spec 文件**（`<specDir>/NNN-title.md`，`status: design`），包含：问题描述、设计决策（选什么+为什么+否决了什么）、目标。参见 [templates.md](templates.md) 的 Spec 模板。
 
-2. **创建 `design()` issue** — 按 issue tracker 的设计方案模板创建。具体命令参见 issue tracker 命令参考（如 [linear.md](linear.md)）。
+2. **创建 `design()` issue** — 按 config 中声明的 provider 创建。具体命令参见对应的 `providers/<provider>.md`。
 
 3. **问用户：** "设计定了，要继续写完整 spec 吗？" → 进入阶段 2。阶段 2 完成后关闭此 design() issue。

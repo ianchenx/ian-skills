@@ -87,4 +87,4 @@ status: design | spec | ready | implemented
 
 ## Issue 模板
 
-Issue body 模板由 issue tracker 管理。具体模板和命令参见 issue tracker 命令参考（如 [linear.md](linear.md)）。
+Issue body 模板由 issue tracker 管理。具体模板和命令参见对应的 `providers/<provider>.md`。

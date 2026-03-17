@@ -30,9 +30,9 @@
 
 1. **理解需求** — 从阶段 1 的 spec draft（status: design）或用户直接描述获取输入
 2. **分析代码** — 阅读相关源文件，理解现状和架构约束
-3. **撰写 spec** — 按模板补全。如果 spec 文件已存在（status: design），在其基础上补全；否则新建 `docs/specs/NNN-title.md`
+3. **撰写 spec** — 按模板补全。如果 spec 文件已存在（status: design），在其基础上补全；否则新建 `<specDir>/NNN-title.md`
 4. **更新 status** — 完成后将 frontmatter 改为 `status: spec`
-5. 如有 `design()` issue，关闭它（设计决策已落地为 spec）。具体命令参见 issue tracker 命令参考。
+5. 如有 `design()` issue，关闭它（设计决策已落地为 spec）。具体命令参见对应的 `providers/<provider>.md`。
 
 ## Spec 模板
 

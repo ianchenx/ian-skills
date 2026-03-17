@@ -27,11 +27,11 @@ refactor(scope): 一句话描述要重构什么
 
 Issue body 使用 issue tracker 的模板（如有）。按需在 body 末尾追加：
 - **依赖** — 多 issue 时补 Blocks / Blocked by
-- **参考** — 有 spec 时补 `Spec: docs/specs/NNN-title.md`
+- **参考** — 有 spec 时补 `Spec: <specDir>/NNN-title.md`
 
 ## 创建流程
 
-具体命令参见 issue tracker 命令参考（如 [linear.md](linear.md)）。本地模式下在 spec 文件末尾维护 `## Tasks` 清单。
+具体命令参见对应的 `providers/<provider>.md`。
 
 ### 1. 查重
 

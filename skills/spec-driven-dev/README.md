@@ -2,24 +2,19 @@
 
 从想法到可执行任务的完整生命周期管理。
 
-## 零依赖即可使用
+## Setup
 
-不需要任何外部工具。Skill 会自动检测可用的 issue tracker：
+首次使用时 skill 会询问你想用哪个 issue tracker，并创建 `config.json`：
 
-| 检测到 | 行为 |
+| Provider | 需要 |
 |---|---|
-| `linear-graphql-cli` | 用 Linear 管理 issue（参见 `references/linear.md`）|
-| `gh` | 用 GitHub Issues |
-| 都没有 | 本地模式：在 spec 文件内维护 `## Tasks` 清单 |
+| Linear | `linear` skill 已配置 |
+| GitHub | `gh` CLI 可用 |
+| 本地 | 无依赖 — 在 spec 文件内维护 `## Tasks` 清单 |
 
-### 可选：配置 Linear
-
-```bash
-# 通过 uxc 链接 Linear API
-uxc link linear-graphql-cli https://api.linear.app/graphql
-
-# 验证
-linear-graphql-cli query/teams '{"first":1,"_select":"nodes { name }"}'
+Config 结构：
+```json
+{ "provider": "linear", "specDir": "docs/specs" }
 ```
 
 ## 这个 skill 做什么
@@ -37,24 +32,20 @@ linear-graphql-cli query/teams '{"first":1,"_select":"nodes { name }"}'
 
 ```
 spec-driven-dev/
-├── SKILL.md                     ← 入口：意图识别 + 复杂度路由 + issue tracker 检测
+├── SKILL.md                     ← 入口：意图识别 + 复杂度路由 + setup
 ├── README.md                    ← 本文件
+├── config.json                  ← 当前项目配置（provider + specDir）
+├── providers/
+│   ├── linear.md                ← Linear 命令参考
+│   ├── github.md                ← GitHub CLI 命令参考
+│   └── local.md                 ← 本地模式说明
 └── references/
     ├── 01-design.md             ← 阶段 1: 设计讨论方法论
     ├── 02-spec.md               ← 阶段 2: spec 撰写原则
     ├── 03-delivery.md           ← 阶段 3: 交付流程（工具无关）
-    ├── templates.md             ← spec 文件模板
-    └── linear.md                ← Linear 命令参考（示例 issue tracker）
+    └── templates.md             ← spec 文件模板
 ```
 
-## 添加其他 issue tracker
+## 扩展
 
-在 `references/` 下创建对应文件（如 `github.md`、`jira.md`），包含以下操作的具体命令：
-
-- 初始化（获取 project/team ID）
-- 查重（搜索已有 issue）
-- 创建 issue（使用模板）
-- 设置 parent 关系
-- 关闭 issue
-
-然后在 SKILL.md 的「Issue Tracker 检测」段添加检测逻辑。
+添加新 provider：参考 `providers/` 下现有文件的格式创建同名 `.md`，然后在 `config.json` 中指定 `"provider"`。
