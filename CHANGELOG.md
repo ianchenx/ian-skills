@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3 - 2026-03-17
+
+### Fixes
+- codex-agent: change default reasoning from xhigh to high
+- codex-agent: strengthen no-code-writing rule with explain-the-why
+
 ## 0.1.2 - 2026-03-17
 
 ### Fixes
