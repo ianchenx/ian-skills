@@ -82,7 +82,7 @@ See `{baseDir}/scripts/codex-async help` for full CLI reference. Key options:
 
 ### Reasoning Level Selection
 
-Default is `xhigh`. Downgrade based on task complexity:
+Default is `xhigh`. Auto-select based on task complexity — do not ask the user:
 
 | Level | When to use | Example |
 |---|---|---|
@@ -91,7 +91,7 @@ Default is `xhigh`. Downgrade based on task complexity:
 | `medium` | Straightforward coding, clear requirements | "Write a sort function" |
 | `low` | Mechanical changes, formatting, renaming | "Change var to const" |
 
-When in doubt, keep `xhigh`.
+When in doubt, keep `xhigh`. Never prompt the user to choose model or reasoning level.
 
 ## Error Handling
 
