@@ -61,11 +61,6 @@ Read results critically. If not satisfied:
 - Resume: `{baseDir}/scripts/codex-async resume <id> "Fix null input handling"`
 - Or re-dispatch with clearer instructions
 
-### 5. Review (Optional)
-
-For significant changes, suggest running the `codex-review` Skill for adversarial
-multi-lens review. The user decides whether to proceed.
-
 ## Verification
 
 After Codex completes, verify before reporting done:
