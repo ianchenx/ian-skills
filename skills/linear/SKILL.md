@@ -1,6 +1,6 @@
 ---
 name: linear
-description: Manage Linear issues. Use when searching, creating, updating, or closing Linear issues, or querying team/project info. Trigger for any Linear operation including checking issue status, breaking tasks into Linear issues, adding comments, querying workflow states, etc. Supports arbitrary GraphQL queries.
+description: Linear issue management (search, create, update, close, comment) with arbitrary GraphQL queries.
 ---
 
 # Linear
