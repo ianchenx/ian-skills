@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4 - 2026-03-17
+
+### Refactor
+- codex-agent: remove cross-skill coupling (Step 5 recommending codex-review)
+
 ## 0.1.3 - 2026-03-17
 
 ### Fixes
