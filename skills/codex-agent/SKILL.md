@@ -77,7 +77,7 @@ Run `{baseDir}/scripts/codex-async help` for full CLI reference.
 | Option | Description |
 |---|---|
 | `--model` | Model: `gpt-5.3-codex` (default, optimized for code), `gpt-5.4` (general reasoning) |
-| `--reasoning` | Reasoning effort: `xhigh` (default), `high`, `medium`, `low` |
+| `--reasoning` | Reasoning effort: `high` (default), `xhigh`, `medium`, `low` |
 | `--sandbox` | Sandbox: `workspace-write` (default), `read-only`, `danger-full-access` |
 | `--cd` | Working directory for the task |
 

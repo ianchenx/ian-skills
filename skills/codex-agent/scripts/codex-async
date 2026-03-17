@@ -26,7 +26,7 @@ Commands:
 
 Options (run):
   --model      模型选择 (默认: gpt-5.3-codex)
-  --reasoning  推理强度: low|medium|high|xhigh (默认: xhigh)
+  --reasoning  推理强度: low|medium|high|xhigh (默认: high)
   --sandbox    沙箱模式: read-only|workspace-write|danger-full-access (默认: workspace-write)
   --cd         工作目录 (默认: 当前目录)
 EOF
@@ -34,7 +34,7 @@ EOF
 
 cmd_run() {
   local model="gpt-5.3-codex"
-  local reasoning="xhigh"
+  local reasoning="high"
   local sandbox="workspace-write"
   local workdir="$PWD"
   local prompt=""
